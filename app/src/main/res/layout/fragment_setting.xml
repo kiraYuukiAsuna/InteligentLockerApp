@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.setting.SettingFragment">
+
+    <RelativeLayout
+        android:id="@+id/rl_1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/serverinfo"
+            android:layout_width="160dp"
+            android:layout_height="48dp"
+            android:layout_margin="10dp"
+            android:text="设置服务器地址:"
+            android:textColor="#673AB7"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/serverip"
+            android:layout_width="120dp"
+            android:layout_height="48dp"
+            android:layout_margin="10dp"
+            android:text="服务器IP地址:"
+            android:textColor="#2196F3"
+            android:textSize="16sp"
+            android:layout_below="@id/serverinfo"
+            android:gravity="center_vertical"/>
+
+        <EditText
+            android:id="@+id/serveripeditor"
+            android:layout_width="200dp"
+            android:layout_height="48dp"
+            android:layout_margin="10dp"
+            android:text="27015"
+            android:textColor="#009688"
+            android:textSize="16sp"
+            android:layout_toRightOf="@id/serverip"
+            android:layout_below="@id/serverinfo"
+            android:layout_toEndOf="@id/serverip"/>
+
+        <TextView
+            android:id="@+id/serverport"
+            android:layout_width="120dp"
+            android:layout_height="48dp"
+            android:layout_margin="10dp"
+            android:text="服务器端口:"
+            android:textColor="#2196F3"
+            android:textSize="16sp"
+            android:gravity="center_vertical"
+            android:layout_below="@id/serverip"/>
+
+        <EditText
+            android:id="@+id/serverporteditor"
+            android:layout_width="200dp"
+            android:layout_height="48dp"
+            android:layout_margin="10dp"
+            android:text="27015"
+            android:textColor="#009688"
+            android:textSize="16sp"
+            android:layout_toRightOf="@id/serverport"
+            android:layout_below="@id/serverip"
+            android:layout_toEndOf="@id/serverip"/>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button"
+            android:layout_below="@id/serverport"
+            android:layout_centerHorizontal="true"/>
+
+
+        ></RelativeLayout>
+
+    <TextView
+        android:id="@+id/text_notifications"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
