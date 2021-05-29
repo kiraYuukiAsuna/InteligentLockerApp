@@ -4,16 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.CodeScannerView
 import com.budiyev.android.codescanner.DecodeCallback
+import com.example.inteligentlockerapp.MainActivity
 import com.example.inteligentlockerapp.R
 import com.example.inteligentlockerapp.databinding.FragmentQrcodescanBinding
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class QrcodescanFragment : Fragment() {
 
@@ -35,10 +36,6 @@ class QrcodescanFragment : Fragment() {
         _binding = FragmentQrcodescanBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textDashboard
-        qrcodescanViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
         return root
     }
 
@@ -49,14 +46,17 @@ class QrcodescanFragment : Fragment() {
 
     private lateinit var codeScanner: CodeScanner
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val scannerView = view.findViewById<CodeScannerView>(R.id.scanner_view)
         val activity = requireActivity()
         codeScanner = CodeScanner(activity, scannerView)
         codeScanner.decodeCallback = DecodeCallback {
+            val mainActivity: MainActivity = activity as MainActivity
+            GlobalScope.launch {
+                mainActivity.unlockRequest(it.text)
+            }
             activity.runOnUiThread {
-                Toast.makeText(activity, it.text, Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, it.text, Toast.LENGTH_SHORT).show()
             }
         }
         scannerView.setOnClickListener {

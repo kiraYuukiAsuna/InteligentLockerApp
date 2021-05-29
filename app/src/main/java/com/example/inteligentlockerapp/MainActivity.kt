@@ -1,6 +1,7 @@
 package com.example.inteligentlockerapp
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Looper
@@ -17,11 +18,11 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.inteligentlockerapp.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.*
 import java.net.Socket
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -53,11 +54,6 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        GlobalScope.launch {
-            connectServer(mServerIP, mServerPort)
-
-        }
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -73,6 +69,44 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        readConfig()
+
+        GlobalScope.launch {
+            connectServer(mServerIP, mServerPort)
+        }
+
+        showNormalDialog()
+    }
+
+    private fun showNormalDialog() {
+        val alterDiaglog = AlertDialog.Builder(this)
+        alterDiaglog.setTitle("欢迎！")
+        alterDiaglog.setMessage("即刻进入！")
+//builder.setPositiveButton("OK", DialogInterface.OnClickListener(function = x))
+
+        alterDiaglog.setPositiveButton("确认") { dialog, which ->
+            Toast.makeText(
+                applicationContext,
+                android.R.string.yes, Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        alterDiaglog.setNegativeButton("取消") { dialog, which ->
+            Toast.makeText(
+                applicationContext,
+                android.R.string.no, Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        alterDiaglog.setNeutralButton("Maybe") { dialog, which ->
+            Toast.makeText(
+                applicationContext,
+                "Maybe", Toast.LENGTH_SHORT
+            ).show()
+        }
+        runOnUiThread { alterDiaglog.show() }
+
     }
 
     override fun onRequestPermissionsResult(
@@ -83,15 +117,15 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 1) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Camera permission granted", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Camera permission granted", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show()
             }
         } else if (requestCode == 2) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Internet permission granted", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Internet permission granted", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(this, "Internet permission denied", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Internet permission denied", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -104,84 +138,83 @@ class MainActivity : AppCompatActivity() {
     private var mPrintWriter: PrintWriter? = null
     private var mBufferedReader: BufferedReader? = null
 
-    private val mServerIP: String = "192.168.1.110"
-    private val mServerPort = 25500
+    private var mReceiveMsg: String? = null
 
-    private val mReceiveMsg: String? = null
+    suspend fun connectServer(serverIP: String?, serverPort: String?) {
+        if (serverIP != null && serverPort != null) {
+            try {
+                mClientSocket = Socket(serverIP, serverPort.toInt())
 
-    suspend fun connectServer(serverIP: String, serverPort: Int) {
-        try {
-            mClientSocket = Socket(serverIP, serverPort.toInt())
+                Log.d(mTag, "successfully!")
 
-            Log.d(mTag, "successfully!")
+                mClientSocket!!.soTimeout = 60000
 
-            mClientSocket!!.soTimeout = 60000
+                mPrintWriter = PrintWriter(
+                    BufferedWriter(
+                        OutputStreamWriter(
+mClientSocket!!.getOutputStream(), "UTF-8"
+                        )
+                    ), true
+                )
+                mBufferedReader =
+                    BufferedReader(InputStreamReader(mClientSocket!!.getInputStream(), "UTF-8"))
 
-            mPrintWriter = PrintWriter(
-                BufferedWriter(
-                    OutputStreamWriter( //步骤二
-                        mClientSocket!!.getOutputStream(), "UTF-8"
-                    )
-                ), true
-            )
-            mBufferedReader =
-                BufferedReader(InputStreamReader(mClientSocket!!.getInputStream(), "UTF-8"))
+                mIsRealConnected = true;
 
-            mIsRealConnected = true;
+                if (isRealConnected()) {
+                    //发送判断身份验证的码，APP端是0000002，硬件端是0000001
+                    sendMessageToServer("0000002")
 
-            if (isRealConnected()) {
-                //发送判断身份验证的码，APP端是0000002，硬件端是0000001
-                sendMessageToServer("0000002")
+                    userLogin()
+                    Looper.prepare()
+                    Toast.makeText(this, "连接服务器成功！", Toast.LENGTH_SHORT).show()
+                    Looper.loop()
+                }
 
-                userLogin()
+            } catch (e: Exception) {
+                Log.e(mTag, ("fun ConnectServer:" + e.message))
                 Looper.prepare()
-                Toast.makeText(this, "连接服务器成功！", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "连接服务器失败！Error:" + e.message, Toast.LENGTH_SHORT).show()
                 Looper.loop()
             }
-
-        } catch (e: Exception) {
-            Log.e(mTag, ("fun ConnectServer:" + e.message))
-            Looper.prepare()
-            Toast.makeText(this, "连接服务器失败！Error:" + e.message, Toast.LENGTH_LONG).show()
-            Looper.loop()
         }
     }
 
-    suspend fun isRealConnected(): Boolean {
+    fun isRealConnected(): Boolean {
         return !mClientSocket!!.isClosed && mClientSocket!!.isConnected && mIsRealConnected
     }
 
     suspend fun userLogin() {
         if (isRealConnected()) {
-            //用户登录请求 用户名
-            sendMessageToServer("user")
-            //密码
-            sendMessageToServer("password")
-            //
-            GlobalScope.launch {
-                recvMessageFromServer()
+            if (mUserName != null && mUserPassword != null) {
+                //用户登录请求 用户名
+                sendMessageToServer(mUserName!!)
+                //密码
+                sendMessageToServer(mUserPassword!!)
+                //
+                GlobalScope.launch {
+                    recvMessageFromServer()
+                }
+            } else {
+                Looper.prepare()
+                Toast.makeText(this, "连接服务器失败！", Toast.LENGTH_SHORT).show()
+                Looper.loop()
             }
-        } else {
-            Looper.prepare()
-            Toast.makeText(this, "连接服务器失败！", Toast.LENGTH_LONG).show()
-            Looper.loop()
         }
     }
 
-    suspend fun recvMessageFromServer() {
-        try {
-            var receiveMsg: String
-            while (isRealConnected()) {
-                receiveMsg = mBufferedReader?.readLine() ?: ""
-                if (receiveMsg != "") {
+    fun recvMessageFromServer() {
+        while (isRealConnected()) {
+            try {
+                mReceiveMsg = mBufferedReader?.readLine() ?: ""
+                if (mReceiveMsg != "") {
                     Log.d(mTag, ("fun recvMessageFromServer:" + "recv new message"))
-                    var a: TextView = findViewById<TextView>(R.id.text_home)
-                    a.text = receiveMsg;
+                    var textview: TextView = findViewById(R.id.serverreturnmessage)
+                    textview.text = mReceiveMsg
                 }
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
-        } catch (e: IOException) {
-            Log.d(mTag, "receiveMsg: ")
-            e.printStackTrace()
         }
     }
 
@@ -193,4 +226,110 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    suspend fun reconnect() {
+        connectServer(mServerIP, mServerPort)
+    }
+
+    suspend fun unlockRequest(securityCode: String) {
+        sendMessageToServer(securityCode)
+    }
+
+    var serverIPFileName: String = "serverip.txt"
+    var serverPortFileName: String = "serverport.txt"
+    var userNameFileName: String = "username.txt"
+    var userPasswordFileName: String = "userpassword.txt"
+    var userMailFileName: String = "usermail.txt"
+
+    var mServerIP: String? = null
+    var mServerPort: String? = null
+    var mUserName: String? = null
+    var mUserPassword: String? = null
+    var mUserMail: String? = null
+
+    private fun readConfig() {
+        var dataPath: File? = getExternalFilesDir("")
+        try {
+            mServerIP = readTxtFile(dataPath.toString(), serverIPFileName)?.trim()
+            mServerPort = readTxtFile(dataPath.toString(), serverPortFileName)?.trim()
+
+            mUserName = readTxtFile(dataPath.toString(), userNameFileName)?.trim()
+            mUserPassword = readTxtFile(dataPath.toString(), userPasswordFileName)?.trim()
+
+            mUserMail = readTxtFile(dataPath.toString(), userMailFileName)?.trim()
+
+            Toast.makeText(this, "读取配置文件成功！", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Log.e("File Exception:", e.message.toString())
+        }
+    }
+
+    fun updateConfigValue() {
+        readConfig()
+    }
+
+    /**
+     * 写文件
+     *
+     * @param content 文件内容
+     * @param filePath 文件路径(不要以/结尾)
+     * @param fileName 文件名称（包含后缀,如：ReadMe.txt）
+     * 新内容
+     * @throws IOException
+     */
+    private fun writeTxtFile(
+        content: String,
+        filePath: String,
+        fileName: String,
+        append: Boolean
+    ): Boolean {
+        var flag: Boolean = true
+        val thisFile = File("$filePath/$fileName")
+        try {
+            if (!thisFile.parentFile.exists()) {
+                thisFile.parentFile.mkdirs()
+            }
+            val fw = FileWriter("$filePath/$fileName", append)
+            fw.write(content)
+            fw.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return flag
+    }
+
+    /**
+     * 读TXT文件内容
+     * @param filePath 文件路径(不要以 / 结尾)
+     * @param fileName 文件名称（包含后缀,如：ReadMe.txt）
+     * @return
+     */
+    @Throws(Exception::class)
+    private fun readTxtFile(filePath: String, fileName: String): String? {
+        var result: String? = ""
+        val fileName = File("$filePath/$fileName")
+        var fileReader: FileReader? = null
+        var bufferedReader: BufferedReader? = null
+        try {
+            fileReader = FileReader(fileName)
+            bufferedReader = BufferedReader(fileReader)
+            try {
+                var read: String? = null
+                while (run {
+                        read = bufferedReader.readLine()
+                        read
+                    } != null) {
+                    result = result + read + "\r\n"
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            bufferedReader?.close()
+            fileReader?.close()
+        }
+        return result
+    }
 }

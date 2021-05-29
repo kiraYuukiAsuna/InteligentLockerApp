@@ -6,21 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".ui.setting.SettingFragment">
 
-    <RelativeLayout
-        android:id="@+id/rl_1"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/serverinfo"
-            android:layout_width="160dp"
-            android:layout_height="48dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="设置服务器地址:"
-            android:textColor="#673AB7"
-            android:textSize="16sp" />
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:gravity="center_horizontal" />
 
         <TextView
             android:id="@+id/serverip"
@@ -28,7 +32,7 @@
             android:layout_height="48dp"
             android:layout_margin="10dp"
             android:text="服务器IP地址:"
-            android:textColor="#2196F3"
+            android:textColor="#000000"
             android:textSize="16sp"
             android:layout_below="@id/serverinfo"
             android:gravity="center_vertical"/>
@@ -38,12 +42,13 @@
             android:layout_width="200dp"
             android:layout_height="48dp"
             android:layout_margin="10dp"
-            android:text="27015"
-            android:textColor="#009688"
+            android:text="192.168.1.110"
+            android:textColor="#AA00FF"
             android:textSize="16sp"
             android:layout_toRightOf="@id/serverip"
             android:layout_below="@id/serverinfo"
-            android:layout_toEndOf="@id/serverip"/>
+            android:layout_toEndOf="@id/serverip"
+            android:inputType="text"/>
 
         <TextView
             android:id="@+id/serverport"
@@ -51,7 +56,7 @@
             android:layout_height="48dp"
             android:layout_margin="10dp"
             android:text="服务器端口:"
-            android:textColor="#2196F3"
+            android:textColor="#000000"
             android:textSize="16sp"
             android:gravity="center_vertical"
             android:layout_below="@id/serverip"/>
@@ -61,36 +66,162 @@
             android:layout_width="200dp"
             android:layout_height="48dp"
             android:layout_margin="10dp"
-            android:text="27015"
-            android:textColor="#009688"
+            android:text="25500"
+            android:textColor="#AA00FF"
             android:textSize="16sp"
             android:layout_toRightOf="@id/serverport"
             android:layout_below="@id/serverip"
-            android:layout_toEndOf="@id/serverip"/>
+            android:layout_toEndOf="@id/serverip"
+            android:inputType="text"/>
 
         <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
+            android:id="@+id/serversettingbutton"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:text="Button"
+            android:text="保存设置"
+            android:textSize="16sp"
+            android:textColor="#FFFFFF"
             android:layout_below="@id/serverport"
             android:layout_centerHorizontal="true"/>
 
-
         ></RelativeLayout>
 
-    <TextView
-        android:id="@+id/text_notifications"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/userinfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="用户账户设置:"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:gravity="center_horizontal" />
+
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="120dp"
+                android:layout_height="48dp"
+                android:layout_margin="10dp"
+                android:text="用户名:"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:layout_below="@id/userinfo"
+                android:gravity="center_vertical"/>
+
+            <EditText
+                android:id="@+id/usernameeditor"
+                android:layout_width="200dp"
+                android:layout_height="48dp"
+                android:layout_margin="10dp"
+                android:text="userfortest"
+                android:textColor="#304FFE"
+                android:textSize="16sp"
+                android:layout_toRightOf="@id/username"
+                android:layout_below="@id/userinfo"
+                android:layout_toEndOf="@id/username"
+                android:inputType="text"/>
+
+            <TextView
+                android:id="@+id/userpassword"
+                android:layout_width="120dp"
+                android:layout_height="48dp"
+                android:layout_margin="10dp"
+                android:text="用户密码:"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:gravity="center_vertical"
+                android:layout_below="@id/username"/>
+
+            <EditText
+                android:id="@+id/userpasswordeditor"
+                android:layout_width="200dp"
+                android:layout_height="48dp"
+                android:layout_margin="10dp"
+                android:text="123456"
+                android:textColor="#304FFE"
+                android:textSize="16sp"
+                android:layout_toRightOf="@id/userpassword"
+                android:layout_below="@id/username"
+                android:layout_toEndOf="@id/username"
+                android:inputType="textPassword"/>
+
+            <Button
+                android:id="@+id/buttonreconnect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="重新连接"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                android:layout_below="@id/userpassword"
+                android:layout_marginLeft="8dp"/>
+
+            <Button
+                android:id="@+id/loginbutton"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:text="登录"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                android:layout_below="@id/userpassword"
+                android:layout_centerHorizontal="true"/>
 
 
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/usersettinginfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="用户资料设置:"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:gravity="center_horizontal" />
+
+            <TextView
+                android:id="@+id/usermail"
+                android:layout_width="120dp"
+                android:layout_height="48dp"
+                android:layout_margin="10dp"
+                android:text="用户邮箱:"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:layout_below="@id/usersettinginfo"
+                android:gravity="center_vertical"/>
+
+            <EditText
+                android:id="@+id/usermaileditor"
+                android:layout_width="200dp"
+                android:layout_height="48dp"
+                android:layout_margin="10dp"
+                android:text="userfortest@exmple.com"
+                android:textColor="#00BFA5"
+                android:textSize="16sp"
+                android:layout_below="@id/usersettinginfo"
+                android:layout_toRightOf="@id/usermail"
+                android:inputType="text"/>
+
+            <Button
+                android:id="@+id/mailsettingbutton"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:text="设置邮箱"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"
+                android:layout_below="@id/usermail"
+                android:layout_centerHorizontal="true"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

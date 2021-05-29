@@ -6,17 +6,76 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-    <TextView
-        android:id="@+id/text_home"
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
+        <TextView
+            android:id="@+id/serverreturninfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="状态信息："
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:id="@+id/serverreturnmessage"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_margin="10dp"
+            android:text=""
+            android:textColor="#009688"
+            android:textSize="24sp"
+            android:gravity="center_horizontal"
+            android:layout_below="@+id/serverreturninfo"/>
+
+        <TextView
+            android:id="@+id/security"
+            android:layout_width="160dp"
+            android:layout_height="48dp"
+            android:layout_margin="10dp"
+            android:text="安全代码:"
+            android:textColor="#AA00FF"
+            android:textSize="24sp"
+            android:gravity="center_vertical"
+            android:layout_below="@+id/serverreturnmessage"/>
+
+        <EditText
+            android:id="@+id/securityeditor"
+            android:layout_width="200dp"
+            android:layout_height="48dp"
+            android:layout_margin="10dp"
+            android:text=""
+            android:textColor="#6200EA"
+            android:textSize="24sp"
+            android:gravity="center_horizontal"
+            android:layout_toRightOf="@id/security"
+            android:inputType="text"
+            android:layout_below="@+id/serverreturnmessage"/>
+
+        <Button
+            android:id="@+id/buttonunlock"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:text="解锁"
+            android:textSize="24sp"
+            android:textColor="#FFFFFF"
+            android:layout_below="@id/securityeditor"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
+
+</LinearLayout>
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
