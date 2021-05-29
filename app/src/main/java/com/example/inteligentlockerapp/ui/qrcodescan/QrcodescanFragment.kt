@@ -48,14 +48,13 @@ class QrcodescanFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val scannerView = view.findViewById<CodeScannerView>(R.id.scanner_view)
-        val activity = requireActivity()
-        codeScanner = CodeScanner(activity, scannerView)
+        val mainActivity: MainActivity = activity as MainActivity
+        codeScanner = CodeScanner(mainActivity, scannerView)
         codeScanner.decodeCallback = DecodeCallback {
-            val mainActivity: MainActivity = activity as MainActivity
             GlobalScope.launch {
                 mainActivity.unlockRequest(it.text)
             }
-            activity.runOnUiThread {
+            mainActivity.runOnUiThread {
                 Toast.makeText(activity, it.text, Toast.LENGTH_SHORT).show()
             }
         }

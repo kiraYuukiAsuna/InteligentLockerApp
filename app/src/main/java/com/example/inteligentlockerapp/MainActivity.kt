@@ -83,7 +83,6 @@ class MainActivity : AppCompatActivity() {
         val alterDiaglog = AlertDialog.Builder(this)
         alterDiaglog.setTitle("欢迎！")
         alterDiaglog.setMessage("即刻进入！")
-//builder.setPositiveButton("OK", DialogInterface.OnClickListener(function = x))
 
         alterDiaglog.setPositiveButton("确认") { dialog, which ->
             Toast.makeText(
@@ -220,7 +219,8 @@ mClientSocket!!.getOutputStream(), "UTF-8"
 
     suspend fun sendMessageToServer(message: String) {
         if (isRealConnected()) {
-            mPrintWriter?.println(message)
+            mPrintWriter?.print(message)
+            mPrintWriter?.flush()
             //to delay a time for server to accept the message sended before
             delay(50)
         }
